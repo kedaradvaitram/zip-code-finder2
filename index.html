@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zip Code & IFSC Finder - India Location & Bank Codes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #212529;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        main {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #dee2e6;
+            padding-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            color: #212529;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 1em;
+        }
+
+        .tab-btn:hover {
+            border-color: #007bff;
+            color: #007bff;
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content h2 {
+            color: #212529;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .subtab-navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .subtab-btn {
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            color: #212529;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .subtab-btn:hover {
+            border-color: #007bff;
+            color: #007bff;
+        }
+
+        .subtab-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .subtab-content {
+            display: none;
+        }
+
+        .subtab-content.active {
+            display: block;
+        }
+
+        .search-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .input-field {
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 1em;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .search-btn {
+            padding: 12px 25px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .search-btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-section {
+            margin-bottom: 25px;
+            animation: fadeIn 0.5s ease-in;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .result-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            border-left: 5px solid #28a745;
+        }
+
+        .result-card h3 {
+            color: #28a745;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .result-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s;
+        }
+
+        .result-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .result-item label {
+            display: block;
+            font-weight: 600;
+            color: #007bff;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .result-item span {
+            display: block;
+            font-size: 1.1em;
+            color: #212529;
+            word-break: break-word;
+        }
+
+        .result-item span.highlight {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #28a745;
+            background: #f0f8f0;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #dc3545;
+            margin-bottom: 15px;
+            display: none;
+            animation: slideIn 0.3s ease-in;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .bank-result-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #007bff;
+            transition: all 0.3s;
+        }
+
+        .bank-result-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transform: translateX(5px);
+        }
+
+        .admin-link {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #007bff;
+            margin-top: 30px;
+        }
+
+        .admin-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .admin-link a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding: 20px 0;
+            opacity: 0.9;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8em; }
+            main { padding: 20px; }
+            .tab-navigation, .subtab-navigation { flex-direction: column; }
+            .tab-btn, .subtab-btn { width: 100%; }
+            .form-row { grid-template-columns: 1fr; }
+            .result-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            header h1 { font-size: 1.5em; }
+            main { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 India Code Finder</h1>
+            <p>Search Zip Codes, Pincodes & Bank IFSC Codes</p>
+        </header>
+
+        <main>
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-btn active" onclick="switchTab(event, 'zipcode')">📍 Zip Code Search</button>
+                <button class="tab-btn" onclick="switchTab(event, 'ifsc')">🏦 IFSC Code Search</button>
+            </div>
+
+            <!-- TAB 1: ZIP CODE SEARCH -->
+            <section id="zipcode" class="tab-content active">
+                <h2>Search by Location</h2>
+                <div class="search-section">
+                    <div class="form-row">
+                        <input type="text" id="village" placeholder="Village/City Name" class="input-field">
+                        <input type="text" id="mandal" placeholder="Mandal/Taluk Name" class="input-field">
+                        <select id="state" class="input-field">
+                            <option value="">Select State</option>
+                            <option value="AP">Andhra Pradesh</option>
+                            <option value="TG">Telangana</option>
+                            <option value="KA">Karnataka</option>
+                            <option value="TN">Tamil Nadu</option>
+                            <option value="MH">Maharashtra</option>
+                            <option value="GJ">Gujarat</option>
+                            <option value="RJ">Rajasthan</option>
+                            <option value="UP">Uttar Pradesh</option>
+                            <option value="MP">Madhya Pradesh</option>
+                            <option value="WB">West Bengal</option>
+                            <option value="OR">Odisha</option>
+                            <option value="KL">Kerala</option>
+                            <option value="PB">Punjab</option>
+                            <option value="HR">Haryana</option>
+                            <option value="UK">Uttarakhand</option>
+                            <option value="HP">Himachal Pradesh</option>
+                            <option value="JK">Jammu & Kashmir</option>
+                            <option value="GA">Goa</option>
+                            <option value="AS">Assam</option>
+                            <option value="MZ">Mizoram</option>
+                        </select>
+                    </div>
+                    <button class="search-btn" onclick="searchZipCode()">🔍 Search Zip Code</button>
+                </div>
+
+                <div id="zipError" class="error-message"></div>
+                <div id="zipResult" class="result-section">
+                    <div class="result-card">
+                        <h3>📌 Location Details</h3>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <label>Village/City:</label>
+                                <span id="resVillage"></span>
+                            </div>
+                            <div class="result-item">
+                                <label>Mandal/Taluk:</label>
+                                <span id="resMandal"></span>
+                            </div>
+                            <div class="result-item">
+                                <label>State:</label>
+                                <span id="resState"></span>
+                            </div>
+                            <div class="result-item">
+                                <label>📮 Zip Code:</label>
+                                <span id="resZipCode" class="highlight"></span>
+                            </div>
+                            <div class="result-item">
+                                <label>📬 Pincode:</label>
+                                <span id="resPincode" class="highlight"></span>
+                            </div>
+                            <div class="result-item">
+                                <label>📍 District:</label>
+                                <span id="resDistrict"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: IFSC CODE SEARCH -->
+            <section id="ifsc" class="tab-content">
+                <h2>Bank IFSC Code Search</h2>
+
+                <div class="subtab-navigation">
+                    <button class="subtab-btn active" onclick="switchIfscTab(event, 'byifsc')">Search by IFSC Code</button>
+                    <button class="subtab-btn" onclick="switchIfscTab(event, 'bybank')">Search by Bank Details</button>
+                </div>
+
+                <!-- Sub-Tab 1: Search by IFSC Code -->
+                <section id="byifsc" class="subtab-content active">
+                    <div class="search-section">
+                        <input type="text" id="ifscCode" placeholder="Enter IFSC Code (e.g., SBIN0001234)" class="input-field large" maxlength="11">
+                        <button class="search-btn" onclick="searchByIFSC()">🔍 Search IFSC Code</button>
+                    </div>
+
+                    <div id="ifscError" class="error-message"></div>
+                    <div id="ifscResult" class="result-section">
+                        <div class="result-card">
+                            <h3>🏦 Bank Branch Details</h3>
+                            <div class="result-grid">
+                                <div class="result-item">
+                                    <label>IFSC Code:</label>
+                                    <span id="resIfscCode" class="highlight"></span>
+                                </div>
+                                <div class="result-item">
+                                    <label>Bank Name:</label>
+                                    <span id="resBankName"></span>
+                                </div>
+                                <div class="result-item">
+                                    <label>Branch Name:</label>
+                                    <span id="resBranchName"></span>
+                                </div>
+                                <div class="result-item">
+                                    <label>Branch Code:</label>
+                                    <span id="resBranchCode"></span>
+                                </div>
+                                <div class="result-item">
+                                    <label>Location/City:</label>
+                                    <span id="resLocationCity"></span>
+                                </div>
+                                <div class="result-item">
+                                    <label>State:</label>
+                                    <span id="resIfscState"></span>
+                                </div>
+                                <div class="result-item">
+                                    <label>Mandal/Taluk:</label>
+                                    <span id="resIfscMandal"></span>
+                                </div>
+                                <div class="result-item">
+                                    <label>District:</label>
+                                    <span id="resIfscDistrict"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sub-Tab 2: Search by Bank Details -->
+                <section id="bybank" class="subtab-content">
+                    <div class="search-section">
+                        <div class="form-row">
+                            <select id="bankName" class="input-field">
+                                <option value="">Select Bank</option>
+                                <option value="SBIN">State Bank of India (SBI)</option>
+                                <option value="HDFC">HDFC Bank</option>
+                                <option value="ICIC">ICICI Bank</option>
+                                <option value="AXIS">Axis Bank</option>
+                                <option value="INDB">IndusInd Bank</option>
+                                <option value="BKID">Bank of India</option>
+                                <option value="BKDN">Bank of Baroda</option>
+                                <option value="PNB">Punjab National Bank</option>
+                                <option value="YES">YES Bank</option>
+                            </select>
+                            <input type="text" id="branchSearchName" placeholder="Branch Name" class="input-field">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" id="citySearch" placeholder="City/Location" class="input-field">
+                            <select id="stateSearch" class="input-field">
+                                <option value="">Select State</option>
+                                <option value="AP">Andhra Pradesh</option>
+                                <option value="TG">Telangana</option>
+                                <option value="KA">Karnataka</option>
+                                <option value="TN">Tamil Nadu</option>
+                                <option value="MH">Maharashtra</option>
+                                <option value="HR">Haryana</option>
+                                <option value="UP">Uttar Pradesh</option>
+                                <option value="WB">West Bengal</option>
+                                <option value="DL">Delhi</option>
+                            </select>
+                        </div>
+                        <button class="search-btn" onclick="searchByBankDetails()">🔍 Search Bank Branch</button>
+                    </div>
+
+                    <div id="bankError" class="error-message"></div>
+                    <div id="bankResult" class="result-section">
+                        <div class="result-card">
+                            <h3>🏦 Search Results</h3>
+                            <div id="bankResultList"></div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <div class="admin-link">
+                <p>Want to manage data? <a href="admin/index.html">Go to Admin Panel</a></p>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 India Code Finder. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script>
+        function switchTab(e, tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const btns = document.querySelectorAll('.tab-navigation .tab-btn');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            btns.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            e.target.classList.add('active');
+        }
+
+        function switchIfscTab(e, tabName) {
+            const tabs = document.querySelectorAll('.subtab-content');
+            const btns = document.querySelectorAll('.subtab-btn');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            btns.forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            e.target.classList.add('active');
+        }
+
+        function searchZipCode() {
+            const village = document.getElementById('village').value.trim();
+            const mandal = document.getElementById('mandal').value.trim();
+            const state = document.getElementById('state').value;
+            const errorDiv = document.getElementById('zipError');
+            const resultDiv = document.getElementById('zipResult');
+            
+            errorDiv.classList.remove('show');
+            resultDiv.classList.remove('show');
+            
+            if (!village || !mandal || !state) {
+                errorDiv.textContent = '⚠️ Please fill all fields';
+                errorDiv.classList.add('show');
+                return;
+            }
+            
+            const result = Object.values(zipCodeDatabase).find(item => 
+                item.village.toUpperCase() === village.toUpperCase() &&
+                item.mandal.toUpperCase() === mandal.toUpperCase() &&
+                item.state === state
+            );
+            
+            if (result) {
+                document.getElementById('resVillage').textContent = result.village;
+                document.getElementById('resMandal').textContent = result.mandal;
+                document.getElementById('resState').textContent = result.state;
+                document.getElementById('resZipCode').textContent = result.zipCode;
+                document.getElementById('resPincode').textContent = result.pincode;
+                document.getElementById('resDistrict').textContent = result.district;
+                resultDiv.classList.add('show');
+            } else {
+                errorDiv.textContent = '❌ Location not found in database.';
+                errorDiv.classList.add('show');
+            }
+        }
+
+        function searchByIFSC() {
+            const ifscCode = document.getElementById('ifscCode').value.trim().toUpperCase();
+            const errorDiv = document.getElementById('ifscError');
+            const resultDiv = document.getElementById('ifscResult');
+            
+            errorDiv.classList.remove('show');
+            resultDiv.classList.remove('show');
+            
+            if (!ifscCode) {
+                errorDiv.textContent = '⚠️ Please enter IFSC code';
+                errorDiv.classList.add('show');
+                return;
+            }
+            
+            const result = ifscCodeDatabase[ifscCode];
+            
+            if (result) {
+                document.getElementById('resIfscCode').textContent = result.ifscCode;
+                document.getElementById('resBankName').textContent = result.bankName;
+                document.getElementById('resBranchName').textContent = result.branchName;
+                document.getElementById('resBranchCode').textContent = result.branchCode;
+                document.getElementById('resLocationCity').textContent = result.location;
+                document.getElementById('resIfscState').textContent = result.state;
+                document.getElementById('resIfscMandal').textContent = result.mandal;
+                document.getElementById('resIfscDistrict').textContent = result.district;
+                resultDiv.classList.add('show');
+            } else {
+                errorDiv.textContent = '❌ IFSC code not found in database.';
+                errorDiv.classList.add('show');
+            }
+        }
+
+        function searchByBankDetails() {
+            const bankCode = document.getElementById('bankName').value;
+            const branchName = document.getElementById('branchSearchName').value.trim();
+            const city = document.getElementById('citySearch').value.trim();
+            const state = document.getElementById('stateSearch').value;
+            const errorDiv = document.getElementById('bankError');
+            const resultDiv = document.getElementById('bankResult');
+            
+            errorDiv.classList.remove('show');
+            resultDiv.classList.remove('show');
+            
+            if (!bankCode) {
+                errorDiv.textContent = '⚠️ Please select a bank';
+                errorDiv.classList.add('show');
+                return;
+            }
+            
+            const results = Object.values(ifscCodeDatabase).filter(item => {
+                const bankMatch = item.ifscCode.startsWith(bankCode);
+                const branchMatch = !branchName || item.branchName.toUpperCase().includes(branchName.toUpperCase());
+                const cityMatch = !city || item.city.toUpperCase().includes(city.toUpperCase());
+                const stateMatch = !state || item.state === state;
+                
+                return bankMatch && branchMatch && cityMatch && stateMatch;
+            });
+            
+            if (results.length > 0) {
+                const listDiv = document.getElementById('bankResultList');
+                listDiv.innerHTML = '';
+                
+                results.forEach(result => {
+                    const resultItem = document.createElement('div');
+                    resultItem.style.cssText = 'background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #007bff;';
+                    resultItem.innerHTML = `
+                        <div style="margin-bottom: 10px;">
+                            <strong style="color: #007bff;">IFSC Code:</strong> <span style="font-size: 1.2em; color: #28a745; font-weight: bold;">${result.ifscCode}</span>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <strong style="color: #007bff;">Branch:</strong> ${result.branchName}
+                        </div>
+                        <div>
+                            <strong style="color: #007bff;">Location:</strong> ${result.location}, ${result.state}
+                        </div>
+                    `;
+                    listDiv.appendChild(resultItem);
+                });
+                resultDiv.classList.add('show');
+            } else {
+                errorDiv.textContent = '❌ No branches found with those criteria.';
+                errorDiv.classList.add('show');
+            }
+        }
+    </script>
+</body>
+</html>
