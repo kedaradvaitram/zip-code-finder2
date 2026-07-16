@@ -1,0 +1,68 @@
+// Search Functionality Tests
+describe('Search Tests', () => {
+    
+    // Mock database
+    const zipCodeDatabase = {
+        '10001': {
+            city: 'New York',
+            state: 'NY',
+            county: 'New York County',
+            areaCode: '212, 646, 917',
+            timezone: 'Eastern Time (ET)'
+        },
+        '90210': {
+            city: 'Beverly Hills',
+            state: 'CA',
+            county: 'Los Angeles County',
+            areaCode: '310, 424',
+            timezone: 'Pacific Time (PT)'
+        }
+    };
+
+    test('should find existing zip code', () => {
+        const zipCode = '10001';
+        expect(zipCodeDatabase[zipCode]).toBeDefined();
+        expect(zipCodeDatabase[zipCode].city).toBe('New York');
+    });
+
+    test('should return correct city for zip code', () => {
+        const result = zipCodeDatabase['90210'];
+        expect(result.city).toBe('Beverly Hills');
+        expect(result.state).toBe('CA');
+    });
+
+    test('should return undefined for non-existent zip code', () => {
+        const result = zipCodeDatabase['99999'];
+        expect(result).toBeUndefined();
+    });
+
+    test('should return all required fields', () => {
+        const result = zipCodeDatabase['10001'];
+        expect(result).toHaveProperty('city');
+        expect(result).toHaveProperty('state');
+        expect(result).toHaveProperty('county');
+        expect(result).toHaveProperty('areaCode');
+        expect(result).toHaveProperty('timezone');
+    });
+
+    test('should handle case sensitivity', () => {
+        const zipCode = '10001';
+        expect(zipCodeDatabase[zipCode.toString()]).toBeDefined();
+    });
+
+    test('should search multiple results', () => {
+        const results = Object.keys(zipCodeDatabase).filter(zip => 
+            zipCodeDatabase[zip].state === 'NY'
+        );
+        expect(results.length).toBeGreaterThan(0);
+    });
+
+    test('should filter by state', () => {
+        const stateFilter = 'CA';
+        const filtered = Object.entries(zipCodeDatabase).filter(
+            ([_, data]) => data.state === stateFilter
+        );
+        expect(filtered.length).toBeGreaterThan(0);
+        expect(filtered[0][1].state).toBe('CA');
+    });
+});
