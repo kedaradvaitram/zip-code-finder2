@@ -1,0 +1,27 @@
+{
+  "name": "zip-code-finder",
+  "version": "1.0.0",
+  "description": "A powerful tool to help developers quickly locate and manage project files, configurations, and API structures efficiently.",
+  "main": "index.html",
+  "scripts": {
+    "start": "npm install",
+    "test": "jest",
+    "dev": "http-server",
+    "build": "echo Build complete"
+  },
+  "keywords": [
+    "zip-code",
+    "finder",
+    "location",
+    "search"
+  ],
+  "author": "kedaradvaitram",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "http-server": "^14.1.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
